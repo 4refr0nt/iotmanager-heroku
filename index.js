@@ -170,7 +170,7 @@ function pubConfig() {
 function Logger(x) {
    console.log(x)
    var t = new Date();
-   if (log.length >= 100) {
+   if (log.length >= 50) {
       log.shift();
    }
    log.push({date:t.format("YYYY-MM-DD hh:mm:ss.SS") , text:x});
