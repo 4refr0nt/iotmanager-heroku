@@ -1,0 +1,8 @@
+{
+  "name": "IoT Manager DEMO",
+  "description": "",
+  "repository": "",
+  "logo": "",
+  "keywords": ["node", "IoTmanager"],
+  "image": "heroku/nodejs"
+}

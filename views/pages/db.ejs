@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <% include ../partials/header.ejs %>
+<script type='text/javascript'>
+function refresher() {
+  location.reload();
+}
+setInterval("refresher()", 3000);
+</script>
+</head>
+
+<body>
+
+<% include ../partials/nav.ejs %>
+
+<div class="container">
+<h2>Logs</h2>
+<ul>
+    <% results.forEach(function(r) { %>
+        <li><%= r.date %> - <%= r.text %></li>
+    <% }); %>
+</ul>
+
+</div>
+
+</body>
+</html>
