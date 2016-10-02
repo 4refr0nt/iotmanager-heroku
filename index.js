@@ -176,7 +176,7 @@ function Logger(x) {
    log.push({date:t.format("YYYY-MM-DD hh:mm:ss.SS") , text:x});
 }
 ////////////////////////////////////////////////
-function pubStatus( force ) {
+function pubStatus() {
   var outdoor = 10 + Math.round(Math.random() * 5);
   var indoor = 18 + Math.round(Math.random() * 5);
   var hum = 50 + Math.round(Math.random() * 20);
