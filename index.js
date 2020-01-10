@@ -34,6 +34,7 @@ var opt = {
 };
 
 var garageDoor = { status: 1 };
+var light1 = 0;
 
 var deviceID = "arduino";
 var prefix = "/IoTmanager";
@@ -85,8 +86,8 @@ config.push({
 
 config.push({
     pageId: 1,
-    widget: 'Light',
-    descr: 'toggle',
+    widget: 'toggle',
+    descr: 'Kitchen light ',
     topic: prefix + "/" + deviceID + "/light1",
 });
 
@@ -95,7 +96,7 @@ deviceID = 'esp8266';
 config.push({
     page: "Garage",
     pageId: 2,
-    descr: 'Door',
+    descr: 'Garage door',
     widget: 'toggle',
     topic: prefix + "/" + deviceID + "/garagedoor",
     status: 1,
@@ -144,6 +145,10 @@ client.on('message', function(topic, message) {
         garageDoor = message.toString() == '1' ? { status: 1 } : { status: 0 };
         client.publish(prefix + "/arduino/light1/status", JSON.stringify(garageDoor), { qos: 0 });
     }
+    if (topic.toString() === prefix + "/esp8266/garagedoor/control") {
+        light1 = message.toString() == '1' ? 1 : 0;
+        client.publish(prefix + "/esp8266/garagedoor/status", JSON.stringify({ status: light1 }), { qos: 0 });
+    }
     pubStatus();
 })
 ////////////////////////////////////////////////
@@ -175,8 +180,8 @@ function pubStatus() {
     client.publish(config[2].topic + "/status", JSON.stringify({ status: bedroom }));
     client.publish(config[3].topic + "/status", JSON.stringify({ status: hum }));
     client.publish(config[4].topic + "/status", JSON.stringify(co2));
-    client.publish(config[5].topic + "/status", JSON.stringify(garageDoor));
-    client.publish(config[6].topic + "/status", JSON.stringify(motion));
+    client.publish(config[6].topic + "/status", JSON.stringify(garageDoor));
+    client.publish(config[7].topic + "/status", JSON.stringify(motion));
     Logger('publish outdoor:' + outdoor + ' indoor:' + indoor + ' hum:' + hum + ' and other data');
 }
 ////////////////////////////////////////////////
