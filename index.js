@@ -68,7 +68,7 @@ config.push({
     descr: 'Bedroom temp',
     widget: 'anydata',
     topic: prefix + "/" + deviceID + "/bedroom",
-    after: '°C'
+    after: '°C',
     icon: 'thermometer',
 });
 
