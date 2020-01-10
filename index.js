@@ -33,8 +33,8 @@ var opt = {
     connectTimeout: 3000
 };
 
-var garageDoor = { status: 1 };
-var light1 = 0;
+var garageDoor = 0;
+var light1 = 1;
 
 var deviceID = "arduino";
 var prefix = "/IoTmanager";
@@ -139,17 +139,17 @@ client.on('message', function(topic, message) {
     if (topic.toString() === prefix && message.toString() == "HELLO") {
         Logger('HELLO detected');
         pubConfig();
+        pubStatus();
     }
-
     if (topic.toString() === prefix + "/arduino/light1/control") {
-        garageDoor = message.toString() == '1' ? { status: 1 } : { status: 0 };
-        client.publish(prefix + "/arduino/light1/status", JSON.stringify(garageDoor), { qos: 0 });
+        light1 = message.toString() == '1' ? 1 : 0;
+        client.publish(prefix + "/arduino/light1/status", JSON.stringify({ status: light1 }), { qos: 0 });
     }
     if (topic.toString() === prefix + "/esp8266/garagedoor/control") {
-        light1 = message.toString() == '1' ? 1 : 0;
-        client.publish(prefix + "/esp8266/garagedoor/status", JSON.stringify({ status: light1 }), { qos: 0 });
+        garageDoor = message.toString() == '1' ? 1 : 0;
+        client.publish(prefix + "/esp8266/garagedoor/status", JSON.stringify({ status: garageDoor }), { qos: 0 });
     }
-    pubStatus();
+
 })
 ////////////////////////////////////////////////
 function pubConfig() {
