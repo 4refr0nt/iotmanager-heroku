@@ -24,177 +24,170 @@ var df = require("date-format-lite");
 Date.masks.default = 'YYYY-MM-DD hh:mm:ss.SS'
 
 var opt = {
-  host       : host,
-  port       : port,
-  username   : user,
-  password   : pass,
-  clientId   : 'iot_heroku_' + Math.random().toString(16).substr(2, 8),
-  protocolId : 'MQTT',
-  connectTimeout: 3000
+    host: host,
+    port: port,
+    username: user,
+    password: pass,
+    clientId: 'iot_heroku_' + Math.random().toString(16).substr(2, 8),
+    protocolId: 'MQTT',
+    connectTimeout: 3000
 };
 
+var garageDoor = { status: 1 };
 
-var waterTemp = 20;
-var hiTemp    = 40;
-var hysteresis= 5;
-
-var deviceID = "boiler-0001";
-var prefix   = "/IoTmanager";
-var config   = [];
-var log      = [];
+var deviceID = "arduino";
+var prefix = "/IoTmanager";
+var config = [];
+var log = [];
 
 var ready = false;
 
-// First line
-var widget   = "anydata";
-var id       = "0"
-config[0] = {
-  id     : id,
-  page   : "boiler",
-  pageId : 1,
-  widget : widget,
-  class1 : "item no-border",
-  style2 : "font-size:16px;",
-  topic  : prefix + "/" + deviceID + "/" + widget + id,
-  class3 : "calm text-center",
-  style3 : "font-size:20px;",
-  status : "My Home"
-};
 
-
-// Outdoor temp
-widget    = "anydata";
-id        = "1"
-config[1] = {
-  id     : id,
-  page   : "boiler",
-  pageId : 1,
-  widget : widget,
-  class1 : "item no-border",
-  style2 : "font-size:20px;float:left",
-  descr  : "Outdoor temp",
-  topic  : prefix + "/" + deviceID + "/" + widget + id,
-  class3 : "assertive",
-  style3 : "font-size:40px;font-weight:bold;float:right",
-};
-
-// Indoor temp
-widget    = "anydata";
-id        = "2"
-config[2] = {
-  id     : id,
-  page   : "boiler",
-  pageId : 1,
-  widget : widget,
-  class1 : "item no-border",
-  style2 : "font-size:20px;float:left;line-height:3em",
-  descr  : "Indoor temp",
-  topic  : prefix + "/" + deviceID + "/" + widget + id,
-  class3 : "balanced-bg light padding-left padding-right rounded",
-  style3 : "font-size:40px;font-weight:bold;float:right;line-height:1.5em",
-};
-
-
-// Humidity
-widget    = "anydata";
-id        = "3"
-config[3] = {
-  id     : id,
-  page   : "boiler",
-  pageId : 1,
-  widget : widget,
-  class1 : "item no-border",
-  style2 : "font-size:20px;float:left;line-height:3em",
-  descr  : "Humidity",
-  topic  : prefix + "/" + deviceID + "/" + widget + id,
-  class3 : "balanced-bg light padding-left padding-right rounded",
-  style3 : "font-size:40px;font-weight:bold;float:right;line-height:1.5em",
-};
-
-// CO2
-widget    = "anydata";
-id        = "4"
-config[4] = {
-  id     : id,
-  page   : "boiler",
-  pageId : 1,
-  widget : widget,
-  class1 : "item no-border",
-  style2 : "font-size:30px;float:left",
-  descr  : "CO2",
-  topic  : prefix + "/" + deviceID + "/" + widget + id,
-  class3 : "balanced",
-  style3 : "font-size:30px;font-weight:bold;float:right",
-};
-
-
-var client   = mqtt.connect(opt);
-
-client.on('connect', function () {
-  Logger('Broker connected');
-  ready = true;
-  client.subscribe(prefix, { qos : 1 }); // HELLO expected
-  client.subscribe(prefix + "/" + deviceID +"/+/control", { qos : 1 }); // all command
-  pubConfig();
+config.push({
+    page: "Home",
+    pageId: 1,
+    descr: 'Outdoor temp',
+    widget: 'anydata',
+    topic: prefix + "/" + deviceID + "/outdoor",
+    after: '°C'
 });
 
-client.on('error', function () {
-  ready = false;
-  Logger('Broker error');
+config.push({
+    pageId: 1,
+    descr: 'Kitchen temp',
+    widget: 'anydata',
+    topic: prefix + "/" + deviceID + "/kitchen",
+    after: '°C'
 });
 
-client.on('offline', function () {
-  ready = false;
-  Logger('Broker offline');
+config.push({
+    pageId: 1,
+    descr: 'Bedroom temp',
+    widget: 'anydata',
+    topic: prefix + "/" + deviceID + "/bedroom",
+    after: '°C'
 });
 
-client.on('message', function (topic, message) {
-  
-  Logger("msg: " + topic.toString() + " => " + message.toString());
+config.push({
+    pageId: 1,
+    descr: 'Humidity',
+    widget: 'anydata',
+    topic: prefix + "/" + deviceID + "/humidity",
+    after: '%'
+});
 
-  if (topic.toString() === prefix && message.toString() == "HELLO" ){
-    Logger('HELLO detected');
+config.push({
+    pageId: 1,
+    descr: 'CO²',
+    widget: 'anydata',
+    topic: prefix + "/" + deviceID + "/co2",
+});
+
+config.push({
+    pageId: 1,
+    widget: 'Light',
+    descr: 'toggle',
+    topic: prefix + "/" + deviceID + "/light1",
+});
+
+deviceID = 'esp8266';
+
+config.push({
+    page: "Garage",
+    pageId: 2,
+    descr: 'Door',
+    widget: 'toggle',
+    topic: prefix + "/" + deviceID + "/garagedoor",
+    status: 1,
+});
+
+config.push({
+    pageId: 2,
+    descr: 'Motion sensor',
+    widget: 'anydata',
+    topic: prefix + "/" + deviceID + "/motion",
+    status: 'no motion',
+    color: 'green',
+});
+
+
+var client = mqtt.connect(opt);
+
+client.on('connect', function() {
+    Logger('Broker connected');
+    ready = true;
+    client.subscribe(prefix, { qos: 1 }); // HELLO expected
+    client.subscribe(prefix + "/+/+/control", { qos: 1 }); // all command
     pubConfig();
-  }
-  pubStatus();
+});
+
+client.on('error', function() {
+    ready = false;
+    Logger('Broker error');
+});
+
+client.on('offline', function() {
+    ready = false;
+    Logger('Broker offline');
+});
+
+client.on('message', function(topic, message) {
+
+    Logger("msg: " + topic.toString() + " => " + message.toString());
+
+    if (topic.toString() === prefix && message.toString() == "HELLO") {
+        Logger('HELLO detected');
+        pubConfig();
+    }
+
+    if (topic.toString() === prefix + "/arduino/light1/control") {
+        garageDoor = message.toString() == '1' ? { status: 1 } : { status: 0 };
+        client.publish(prefix + "/arduino/light1/status", JSON.stringify(garageDoor), { qos: 0 });
+    }
+    pubStatus();
 })
 ////////////////////////////////////////////////
 function pubConfig() {
     Logger('Publish config');
-    client.publish( prefix, deviceID );
     config.forEach(function(item, i, arr) {
-      client.publish(prefix + "/" + deviceID + "/config", JSON.stringify(item),{ qos : 1 });
-    });    
+        client.publish(prefix + "/" + deviceID + "/config", JSON.stringify(item), { qos: 1 });
+    });
 }
 
 function Logger(x) {
-   console.log(x)
-   var t = new Date();
-   if (log.length >= 50) {
-      log.shift();
-   }
-   log.push({date:t.format("YYYY-MM-DD hh:mm:ss.SS") , text:x});
+    console.log(x)
+    var t = new Date();
+    if (log.length >= 50) {
+        log.shift();
+    }
+    log.push({ date: t.format("YYYY-MM-DD hh:mm:ss.SS"), text: x });
 }
 ////////////////////////////////////////////////
 function pubStatus() {
-  var outdoor = 10 + Math.round(Math.random() * 5);
-  var indoor = 18 + Math.round(Math.random() * 5);
-  var hum = 50 + Math.round(Math.random() * 20);
-  client.publish( config[1].topic+"/status", JSON.stringify({ status: outdoor + "°C" }) );
-  client.publish( config[2].topic+"/status", JSON.stringify({ status: indoor + "°C" }) );
-  client.publish( config[3].topic+"/status", JSON.stringify({ status: hum + "%" }) );
-  client.publish( config[4].topic+"/status", JSON.stringify({ status: "normal" }) );
-  Logger('publish outdoor:' + outdoor + ' indoor:' + indoor + ' hum:' + hum);
+    var outdoor = 10 + Math.round(Math.random() * 5);
+    var indoor = 18 + Math.round(Math.random() * 5);
+    var bedroom = 22 + Math.round(Math.random() * 5);
+    var hum = 50 + Math.round(Math.random() * 20);
+    var co2 = Math.random() > 0.5 ? { status: 'normal', color: 'green' } : { status: 'hi', color: 'red' };
+    var motion = Math.random() > 0.5 ? { status: 'no motion', color: 'green' } : { status: 'ALARM', color: 'red' };
+    client.publish(config[0].topic + "/status", JSON.stringify({ status: outdoor }));
+    client.publish(config[1].topic + "/status", JSON.stringify({ status: indoor }));
+    client.publish(config[2].topic + "/status", JSON.stringify({ status: bedroom }));
+    client.publish(config[3].topic + "/status", JSON.stringify({ status: hum }));
+    client.publish(config[4].topic + "/status", JSON.stringify(co2));
+    client.publish(config[5].topic + "/status", JSON.stringify(garageDoor));
+    client.publish(config[6].topic + "/status", JSON.stringify(motion));
+    Logger('publish outdoor:' + outdoor + ' indoor:' + indoor + ' hum:' + hum + ' and other data');
 }
 ////////////////////////////////////////////////
 // run main
 Logger('Start');
 setInterval(function() {
-  if (ready) {
-    pubStatus();
-  } else {
-    Logger('Broker not connected');
-  }
+    if (ready) {
+        pubStatus();
+    } else {
+        Logger('Broker not connected');
+    }
 }, 5000);
 
 ///////////// do express
@@ -210,10 +203,9 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
 app.get('/', function(request, response) {
-  response.render('pages/db', {results: log});
+    response.render('pages/db', { results: log });
 });
 
 app.listen(app.get('port'), function() {
-  Logger('Node app is running on port', app.get('port'));
+    Logger('Node app is running on port', app.get('port'));
 });
-
