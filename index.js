@@ -50,7 +50,8 @@ config.push({
     descr: 'Outdoor temp',
     widget: 'anydata',
     topic: prefix + "/" + deviceID + "/outdoor",
-    after: '°C'
+    after: '°C',
+    faicon: 'fas fa-temperature-high',
 });
 
 config.push({
@@ -58,7 +59,8 @@ config.push({
     descr: 'Kitchen temp',
     widget: 'anydata',
     topic: prefix + "/" + deviceID + "/kitchen",
-    after: '°C'
+    after: '°C',
+    icon: 'thermometer',
 });
 
 config.push({
@@ -67,6 +69,7 @@ config.push({
     widget: 'anydata',
     topic: prefix + "/" + deviceID + "/bedroom",
     after: '°C'
+    icon: 'thermometer',
 });
 
 config.push({
@@ -82,6 +85,7 @@ config.push({
     descr: 'CO²',
     widget: 'anydata',
     topic: prefix + "/" + deviceID + "/co2",
+    faicon: 'fas fa-air-freshener',
 });
 
 config.push({
@@ -89,6 +93,9 @@ config.push({
     widget: 'toggle',
     descr: 'Kitchen light ',
     topic: prefix + "/" + deviceID + "/light1",
+    color: 'orange',
+    faicon: 'fas fa-lightbulb',
+    faiconOff: 'far fa-lightbulb',
 });
 
 deviceID = 'esp8266';
@@ -173,14 +180,15 @@ function pubStatus() {
     var indoor = 18 + Math.round(Math.random() * 5);
     var bedroom = 22 + Math.round(Math.random() * 5);
     var hum = 50 + Math.round(Math.random() * 20);
-    var co2 = Math.random() > 0.5 ? { status: 'normal', color: 'green' } : { status: 'hi', color: 'red' };
+    var co2 = Math.random() > 0.5 ? { status: 'OK', color: 'green' } : { status: 'HIGH LEVEL', color: 'red' };
     var motion = Math.random() > 0.5 ? { status: 'no motion', color: 'green' } : { status: 'ALARM', color: 'red' };
     client.publish(config[0].topic + "/status", JSON.stringify({ status: outdoor }));
     client.publish(config[1].topic + "/status", JSON.stringify({ status: indoor }));
     client.publish(config[2].topic + "/status", JSON.stringify({ status: bedroom }));
     client.publish(config[3].topic + "/status", JSON.stringify({ status: hum }));
     client.publish(config[4].topic + "/status", JSON.stringify(co2));
-    client.publish(config[6].topic + "/status", JSON.stringify(garageDoor));
+    client.publish(config[5].topic + "/status", JSON.stringify({ status: light1 }));
+    client.publish(config[6].topic + "/status", JSON.stringify({ status: garageDoor }));
     client.publish(config[7].topic + "/status", JSON.stringify(motion));
     Logger('publish outdoor:' + outdoor + ' indoor:' + indoor + ' hum:' + hum + ' and other data');
 }
