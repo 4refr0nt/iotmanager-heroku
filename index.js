@@ -51,7 +51,7 @@ config.push({
     widget: 'anydata',
     topic: prefix + "/" + deviceID + "/outdoor",
     after: '°C',
-    faicon: 'fas fa-tree',
+    faicon: 'fas fa-thermometer-half',
 });
 
 config.push({
@@ -85,7 +85,7 @@ config.push({
     descr: 'CO²',
     widget: 'anydata',
     topic: prefix + "/" + deviceID + "/co2",
-    faicon: 'fas fa-air-freshener',
+    faicon: 'fas fa-tree',
 });
 
 config.push({
