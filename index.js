@@ -51,7 +51,7 @@ config.push({
     widget: 'anydata',
     topic: prefix + "/" + deviceID + "/outdoor",
     after: '°C',
-    faicon: 'fas fa-thermometer-half',
+    faicon: 'fas fa-thermometer-full',
 });
 
 config.push({
