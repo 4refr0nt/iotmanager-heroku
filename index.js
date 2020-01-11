@@ -35,6 +35,8 @@ var opt = {
 
 var garageDoor = 0;
 var light1 = 1;
+var air = 1;
+var vent = 0;
 
 var deviceID = "arduino";
 var prefix = "/IoTmanager";
@@ -52,6 +54,7 @@ config.push({
     topic: prefix + "/" + deviceID + "/outdoor",
     after: '°C',
     icon: 'thermometer',
+    order: 10,
 });
 
 config.push({
@@ -61,6 +64,7 @@ config.push({
     topic: prefix + "/" + deviceID + "/kitchen",
     after: '°C',
     icon: 'thermometer',
+    order: 20,
 });
 
 config.push({
@@ -70,6 +74,7 @@ config.push({
     topic: prefix + "/" + deviceID + "/bedroom",
     after: '°C',
     icon: 'thermometer',
+    order: 30,
 });
 
 config.push({
@@ -79,6 +84,7 @@ config.push({
     topic: prefix + "/" + deviceID + "/humidity",
     after: '%',
     icon: 'water',
+    order: 40,
 });
 
 config.push({
@@ -87,19 +93,32 @@ config.push({
     widget: 'anydata',
     topic: prefix + "/" + deviceID + "/co2",
     icon: 'body',
+    order: 50,
 });
 
 config.push({
     pageId: 1,
     widget: 'toggle',
-    descr: 'Kitchen light ',
+    descr: 'Kitchen light',
     topic: prefix + "/" + deviceID + "/light1",
     color: 'orange',
     icon: 'sunny',
     iconOff: 'moon',
+    order: 60,
 });
 
 deviceID = 'esp8266';
+
+config.push({
+    pageId: 1,
+    widget: 'select',
+    descr: 'Air conditioning',
+    topic: prefix + "/" + deviceID + "/air",
+    color: 'blue',
+    icon: 'snow',
+    options: ['Low', 'Medium', 'High'],
+    order: 70,
+});
 
 config.push({
     page: "Garage",
@@ -108,6 +127,7 @@ config.push({
     widget: 'toggle',
     topic: prefix + "/" + deviceID + "/garagedoor",
     status: 1,
+    order: 10,
 });
 
 config.push({
@@ -118,8 +138,18 @@ config.push({
     status: 'no motion',
     color: 'green',
     icon: 'walk',
+    order: 20,
 });
 
+config.push({
+    pageId: 2,
+    descr: 'Venting',
+    widget: 'button',
+    topic: prefix + "/" + deviceID + "/venting",
+    color: 'orange',
+    icon: 'switch',
+    order: 30,
+});
 
 var client = mqtt.connect(opt);
 
@@ -158,6 +188,22 @@ client.on('message', function(topic, message) {
         garageDoor = message.toString() == '1' ? 1 : 0;
         client.publish(prefix + "/esp8266/garagedoor/status", JSON.stringify({ status: garageDoor }), { qos: 0 });
     }
+    if (topic.toString() === prefix + "/esp8266/air/control") {
+        air = parseInt(message.toString(), 10);
+        client.publish(prefix + "/esp8266/air/status", JSON.stringify({ status: air }), { qos: 0 });
+    }
+    if (topic.toString() === prefix + "/esp8266/venting/control") {
+        vent = message.toString() == '1' ? 1 : 0;
+        var vent_status = { status: vent };
+        if (vent === 0) {
+            vent_status.color = 'green';
+        } else if (vent === 1) {
+            vent_status.color = 'orange';
+        } else {
+            vent_status.color = 'red';
+        }
+        client.publish(prefix + "/esp8266/venting/status", JSON.stringify(vent_status), { qos: 0 });
+    }
 
 })
 ////////////////////////////////////////////////
@@ -190,8 +236,10 @@ function pubStatus() {
     client.publish(config[3].topic + "/status", JSON.stringify({ status: hum }));
     client.publish(config[4].topic + "/status", JSON.stringify(co2));
     client.publish(config[5].topic + "/status", JSON.stringify({ status: light1 }));
-    client.publish(config[6].topic + "/status", JSON.stringify({ status: garageDoor }));
-    client.publish(config[7].topic + "/status", JSON.stringify(motion));
+    client.publish(config[6].topic + "/status", JSON.stringify({ status: air }));
+    client.publish(config[7].topic + "/status", JSON.stringify({ status: garageDoor }));
+    client.publish(config[8].topic + "/status", JSON.stringify(motion));
+    client.publish(config[9].topic + "/status", JSON.stringify({ status: vent }));
     Logger('publish outdoor:' + outdoor + ' indoor:' + indoor + ' hum:' + hum + ' and other data');
 }
 ////////////////////////////////////////////////
