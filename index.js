@@ -198,7 +198,7 @@ client.on('message', function(topic, message) {
         setAirStatus();
         client.publish(prefix + "/esp8266/air/status", JSON.stringify(airStatus), { qos: 0 });
     }
-    if (topic.toString() === prefix + "/esp8266/venting/control") {
+    if (topic.toString() === prefix + "/esp32/venting/control") {
         vent = !vent;
         setVentStatus();
         client.publish(prefix + "/esp32/venting/status", JSON.stringify(vent_status), { qos: 0 });
