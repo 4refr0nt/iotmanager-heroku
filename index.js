@@ -86,7 +86,7 @@ config.push({
     descr: 'CO²',
     widget: 'anydata',
     topic: prefix + "/" + deviceID + "/co2",
-    icon: 'body,
+    icon: 'body',
 });
 
 config.push({
