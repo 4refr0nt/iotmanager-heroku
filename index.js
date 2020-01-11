@@ -143,6 +143,8 @@ config.push({
     order: 20,
 });
 
+deviceID = 'esp32';
+
 config.push({
     pageId: 2,
     descr: 'Venting',
@@ -199,7 +201,7 @@ client.on('message', function(topic, message) {
     if (topic.toString() === prefix + "/esp8266/venting/control") {
         vent = !vent;
         setVentStatus();
-        client.publish(prefix + "/esp8266/venting/status", JSON.stringify(vent_status), { qos: 0 });
+        client.publish(prefix + "/esp32/venting/status", JSON.stringify(vent_status), { qos: 0 });
     }
 
 })
@@ -209,9 +211,9 @@ function setAirStatus() {
     if (air == 0) {
         airStatus.color = 'orange';
     } else if (air == 1) {
-        airStatus.color = 'blue';
-    } else {
         airStatus.color = 'green';
+    } else {
+        airStatus.color = 'blue';
     }
 }
 ////////////////////////////////////////////////
