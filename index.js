@@ -36,7 +36,7 @@ var opt = {
 var garageDoor = 0;
 var light1 = 1;
 var air = 1;
-var vent = 0;
+var vent = false;
 
 var deviceID = "arduino";
 var prefix = "/IoTmanager";
@@ -115,6 +115,7 @@ config.push({
     descr: 'Air conditioning',
     topic: prefix + "/" + deviceID + "/air",
     color: 'blue',
+    size: 'small',
     icon: 'snow',
     options: ['Low', 'Medium', 'High'],
     order: 70,
@@ -148,7 +149,7 @@ config.push({
     topic: prefix + "/" + deviceID + "/venting",
     color: 'orange',
     icon: 'switch',
-    order: 30,
+    order: 15,
 });
 
 var client = mqtt.connect(opt);
@@ -189,11 +190,11 @@ client.on('message', function(topic, message) {
         client.publish(prefix + "/esp8266/garagedoor/status", JSON.stringify({ status: garageDoor }), { qos: 0 });
     }
     if (topic.toString() === prefix + "/esp8266/air/control") {
-        air = parseInt(message.toString(), 10);
+        air = message.toString();
         client.publish(prefix + "/esp8266/air/status", JSON.stringify({ status: air }), { qos: 0 });
     }
     if (topic.toString() === prefix + "/esp8266/venting/control") {
-        vent = message.toString() == '1' ? 1 : 0;
+        vent = !vent;
         vents();
         client.publish(prefix + "/esp8266/venting/status", JSON.stringify(vent_status), { qos: 0 });
     }
@@ -218,8 +219,8 @@ function Logger(x) {
 ////////////////////////////////////////////////
 function vents() {
     vent_status = { status: vent ? 'ON' : 'OFF' };
-    
-    if (vent === 0) {
+
+    if (vent) {
         vent_status.color = 'red';
     } else {
         vent_status.color = 'green';
