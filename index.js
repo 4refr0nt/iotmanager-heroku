@@ -51,7 +51,7 @@ config.push({
     widget: 'anydata',
     topic: prefix + "/" + deviceID + "/outdoor",
     after: '°C',
-    faicon: 'fas fa-thermometer-full',
+    icon: 'thermometer',
 });
 
 config.push({
@@ -77,7 +77,8 @@ config.push({
     descr: 'Humidity',
     widget: 'anydata',
     topic: prefix + "/" + deviceID + "/humidity",
-    after: '%'
+    after: '%',
+    icon: 'water',
 });
 
 config.push({
@@ -85,7 +86,7 @@ config.push({
     descr: 'CO²',
     widget: 'anydata',
     topic: prefix + "/" + deviceID + "/co2",
-    faicon: 'fas fa-tree',
+    icon: 'body,
 });
 
 config.push({
@@ -94,8 +95,8 @@ config.push({
     descr: 'Kitchen light ',
     topic: prefix + "/" + deviceID + "/light1",
     color: 'orange',
-    faicon: 'fas fa-lightbulb',
-    faiconOff: 'far fa-lightbulb',
+    icon: 'sunny',
+    iconOff: 'moon',
 });
 
 deviceID = 'esp8266';
@@ -116,6 +117,7 @@ config.push({
     topic: prefix + "/" + deviceID + "/motion",
     status: 'no motion',
     color: 'green',
+    icon: 'walk',
 });
 
 
