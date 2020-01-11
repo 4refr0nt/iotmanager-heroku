@@ -194,14 +194,7 @@ client.on('message', function(topic, message) {
     }
     if (topic.toString() === prefix + "/esp8266/venting/control") {
         vent = message.toString() == '1' ? 1 : 0;
-        var vent_status = { status: vent };
-        if (vent === 0) {
-            vent_status.color = 'green';
-        } else if (vent === 1) {
-            vent_status.color = 'orange';
-        } else {
-            vent_status.color = 'red';
-        }
+        vents();
         client.publish(prefix + "/esp8266/venting/status", JSON.stringify(vent_status), { qos: 0 });
     }
 
@@ -223,6 +216,16 @@ function Logger(x) {
     log.push({ date: t.format("YYYY-MM-DD hh:mm:ss.SS"), text: x });
 }
 ////////////////////////////////////////////////
+function vents() {
+    vent_status = { status: vent ? 'ON' : 'OFF' };
+    
+    if (vent === 0) {
+        vent_status.color = 'red';
+    } else {
+        vent_status.color = 'green';
+    }
+}
+
 function pubStatus() {
     var outdoor = 10 + Math.round(Math.random() * 5);
     var indoor = 18 + Math.round(Math.random() * 5);
@@ -239,7 +242,8 @@ function pubStatus() {
     client.publish(config[6].topic + "/status", JSON.stringify({ status: air }));
     client.publish(config[7].topic + "/status", JSON.stringify({ status: garageDoor }));
     client.publish(config[8].topic + "/status", JSON.stringify(motion));
-    client.publish(config[9].topic + "/status", JSON.stringify({ status: vent }));
+    vents();
+    client.publish(config[9].topic + "/status", JSON.stringify(vent_status));
     Logger('publish outdoor:' + outdoor + ' indoor:' + indoor + ' hum:' + hum + ' and other data');
 }
 ////////////////////////////////////////////////
