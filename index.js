@@ -51,7 +51,7 @@ config.push({
     widget: 'anydata',
     topic: prefix + "/" + deviceID + "/outdoor",
     after: '°C',
-    faicon: 'fas fa-temperature-high',
+    faicon: 'fas fa-tree',
 });
 
 config.push({
