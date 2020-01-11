@@ -37,6 +37,7 @@ var garageDoor = 0;
 var light1 = 1;
 var air = 1;
 var vent = false;
+var airStatus = {};
 
 var deviceID = "arduino";
 var prefix = "/IoTmanager";
@@ -190,8 +191,9 @@ client.on('message', function(topic, message) {
         client.publish(prefix + "/esp8266/garagedoor/status", JSON.stringify({ status: garageDoor }), { qos: 0 });
     }
     if (topic.toString() === prefix + "/esp8266/air/control") {
-        air = message.toString();
-        client.publish(prefix + "/esp8266/air/status", JSON.stringify({ status: air }), { qos: 0 });
+        air = parseInt(message.toString(), 10);
+        setAirStatus();
+        client.publish(prefix + "/esp8266/air/status", JSON.stringify(airStatus), { qos: 0 });
     }
     if (topic.toString() === prefix + "/esp8266/venting/control") {
         vent = !vent;
@@ -200,6 +202,17 @@ client.on('message', function(topic, message) {
     }
 
 })
+
+function setAirStatus() {
+    airStatus = { status: air };
+    if (air == 0) {
+        airStatus.color = 'orange';
+    } else if (air == 1) {
+        airStatus.color = 'blue';
+    } else {
+        airStatus.color = 'green';
+    }
+}
 ////////////////////////////////////////////////
 function pubConfig() {
     Logger('Publish config');
@@ -240,7 +253,8 @@ function pubStatus() {
     client.publish(config[3].topic + "/status", JSON.stringify({ status: hum }));
     client.publish(config[4].topic + "/status", JSON.stringify(co2));
     client.publish(config[5].topic + "/status", JSON.stringify({ status: light1 }));
-    client.publish(config[6].topic + "/status", JSON.stringify({ status: air }));
+    setAirStatus();
+    client.publish(config[6].topic + "/status", JSON.stringify(airStatus));
     client.publish(config[7].topic + "/status", JSON.stringify({ status: garageDoor }));
     client.publish(config[8].topic + "/status", JSON.stringify(motion));
     vents();
