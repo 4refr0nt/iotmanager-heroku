@@ -248,16 +248,16 @@ client.on('message', function(topic, message) {
         client.publish(prefix + "/esp32/venting/status", JSON.stringify(vent_status), { qos: 0 });
     }
     if (topic.toString() === prefix + "/esp32/input_text/control") {
-        client.publish(prefix + "/esp32/input_text/status", JSON.stringify(status: message), { qos: 0 });
+        client.publish(prefix + "/esp32/input_text/status", JSON.stringify({status: message}), { qos: 0 });
     }
     if (topic.toString() === prefix + "/esp32/input_num/control") {
-        client.publish(prefix + "/esp32/input_num/status", JSON.stringify(status: message), { qos: 0 });
+        client.publish(prefix + "/esp32/input_num/status", JSON.stringify({status: message}), { qos: 0 });
     }
     if (topic.toString() === prefix + "/esp32/input_time/control") {
-        client.publish(prefix + "/esp32/input_time/status", JSON.stringify(status: message), { qos: 0 });
+        client.publish(prefix + "/esp32/input_time/status", JSON.stringify({status: message}), { qos: 0 });
     }
     if (topic.toString() === prefix + "/esp32/input_date/control") {
-        client.publish(prefix + "/esp32/input_date/status", JSON.stringify(status: message), { qos: 0 });
+        client.publish(prefix + "/esp32/input_date/status", JSON.stringify({status: message}), { qos: 0 });
     }
 })
 
