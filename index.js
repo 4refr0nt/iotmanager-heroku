@@ -167,7 +167,7 @@ config.push({
   type   : 'number',
   order  : 30,
   status : 321
-};
+});
 
 config.push({
   pageId : 3,
@@ -177,7 +177,7 @@ config.push({
   type   : 'text',
   order  : 40,
   status : "some text"
-};
+});
 
 config.push({
   pageId : 3,
@@ -187,7 +187,7 @@ config.push({
   type   : 'time',
   order  : 50,
   status : "10:00"
-};
+});
 
 config.push({
   pageId : 3,
@@ -198,8 +198,7 @@ config.push({
   size   : 'small',
   order  : 60,
   status : "20.03.2020"
-};
-
+});
 
 var client = mqtt.connect(opt);
 
