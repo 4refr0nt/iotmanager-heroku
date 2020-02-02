@@ -158,7 +158,7 @@ config.push({
 
 config.push({
   pageId : 3,
-  page   : 'input data',
+  page   : 'input',
   widget : 'input',
   topic  : prefix + "/" + deviceID + "/input_num",
   descr  : "Input number",
@@ -198,6 +198,107 @@ config.push({
   size   : 'small',
   order  : 60,
   status : "20.03.2020"
+});
+
+config.push({
+  order  : 10,
+  pageId : 4,
+  page   : 'range',
+  widget : 'range',
+  topic  : prefix + "/" + deviceID + "/range1",
+  descr  : "Contrast",
+  after  : '%',
+  min    : 10, // maybe string
+  max    : 90, // maybe string
+  status : 70, // maybe string
+  debounce: 200, // slow device or slow broker
+});
+
+config.push({
+  order  : 20,
+  pageId : 4,
+  widget : 'range',
+  topic  : prefix + "/" + deviceID + "/range2",
+  descr  : "Brightness",
+  descrColor: 'red',
+  icon   : 'sunny',
+  lsize  : 'small',
+  status : '30',
+  color  : 'orange',
+});
+
+config.push({
+  order  : 30,
+  pageId : 4,
+  widget : 'range',
+  topic  : prefix + "/" + deviceID + "/range3",
+  descrIcon  : 'aperture',
+  k      : 0.0977, // max status - 1023, 1023 * 0.0977 = 100
+  status : '500',
+});
+
+config.push({
+  order  : 10,
+  pageId : 5,
+  page   : 'progress',
+  widget : 'progress-round',
+  topic  : prefix + "/" + deviceID + "/progress-round1",
+  descr  : 'progress 1',
+  descrColor: 'orange',
+  icon   : 'globe',
+  semicircle : '1',
+  max    : 60,
+  stroke : 20,
+  color  : '#45ccce',
+  background: '#777',
+  status : '25',
+});
+
+config.push({
+  pageId : 5,
+  order  : 15,
+  widget : 'progress-line',
+  topic  : prefix + "/" + deviceID + "/progress-line15",
+  descr  : 'Current progress',
+  icon   : 'cafe',
+  max    : 1000,
+  after  : 'pcs',
+  status : '800',
+});
+
+config.push({
+  pageId : 5,
+  order  : 20,
+  widget : 'progress-line',
+  topic  : prefix + "/" + deviceID + "/progress-line16",
+  descr  : 'Current progress',
+  descrColor: 'green',
+  icon   : 'cart',
+  max    : 10,
+  color  : 'green',
+  status : '7',
+});
+
+config.push({
+  pageId : 5,
+  order  : 17,
+  widget : 'progress-line',
+  topic  : prefix + "/" + deviceID + "/progress-line17",
+  descr  : 'Current progress',
+  icon   : 'car',
+  max    : 500,
+  color  : 'orange',
+  descrColor: 'orange',
+  status : '120',
+});
+
+config.push({
+  order  : 20,
+  page   : 'progress',
+  widget : 'progress-round',
+  topic  : prefix + "/" + deviceID + "/example123",
+  descr  : 'progress ',
+  status : '25',
 });
 
 var client = mqtt.connect(opt);
