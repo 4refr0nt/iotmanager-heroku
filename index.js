@@ -301,6 +301,63 @@ config.push({
   status : '25',
 });
 
+config.push({
+  order  : 21,
+  pageId : 6,
+  page   : 'charts',
+  widget : 'chart',
+  topic  : prefix + "/" + deviceID + "/chart19",
+  descr  : 'Chart 1',
+  maxCount: 20,
+  dateFormat: 'mm:ss',
+  series: 'Temperature'
+});
+
+config.push({
+  order  : 22,
+  page   : 'charts',
+  widget : 'chart',
+  topic  : prefix + "/" + deviceID + "/chart20",
+  descr  : 'Chart 2',
+  maxCount: 20,
+  dateFormat: 'mm:ss',
+  series: ['Temperature','Hum'],
+});
+
+config.push({
+  order  : 23,
+  page   : 'charts',
+  widget : 'chart',
+  topic  : prefix + "/" + deviceID + "/chart21",
+  descr  : 'Chart 3',
+  maxCount: 20,
+  type   : 'bar',
+  series: 'Temperature'
+});
+
+config.push({
+  order  : 24,
+  page   : "levels",
+  pageId : 7,
+  widget : "fillgauge",
+  topic  : prefix + "/" + deviceID + "/fillgauge18",
+  descr  : 'Fuel 1',
+  status : 25,
+});
+
+config.push({
+  order  : 25,
+  page   : "levels",
+  widget : "fillgauge",
+  topic  : prefix + "/" + deviceID + "/fillgauge22",
+  descr  : 'Fuel 2',
+  circleColor  : "#D4AB6A",
+  textColor : "#553300",
+  waveTextColor: "#805615",
+  waveColor: "#AA7D39",
+  status : 30,
+});
+
 var client = mqtt.connect(opt);
 
 client.on('connect', function() {
@@ -421,6 +478,20 @@ function pubStatus() {
     setVentStatus();
     client.publish(config[9].topic + "/status", JSON.stringify(vent_status));
     Logger('publish outdoor:' + outdoor + ' indoor:' + indoor + ' hum:' + hum + ' and other data');
+
+  var item = {};
+  item.status = Math.abs(Math.round(Math.random() * 30)); // , Math.abs(Math.round(Math.random() * 100))];
+  client.publish(prefix + "/" + deviceID + "/chart19/status", JSON.stringify(item),{ qos : 1 });
+
+  item.status = [[Math.abs(Math.round(Math.random() * 30))], [Math.abs(Math.round(Math.random() * 100))]];
+  client.publish(prefix + "/" + deviceID + "/chart20/status", JSON.stringify(item),{ qos : 1 });
+
+  item.status = Math.abs(Math.round(Math.random() * 30));
+  client.publish(prefix + "/" + deviceID + "/chart21/status", JSON.stringify(item),{ qos : 1 });
+
+  item.status = 25 + Math.abs(Math.round(Math.random() * 5));
+  client.publish(prefix + "/" + deviceID + "/fillgauge18/status", JSON.stringify(item),{ qos : 1 });
+
 }
 ////////////////////////////////////////////////
 // run main
