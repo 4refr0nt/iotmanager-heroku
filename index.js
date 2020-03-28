@@ -7,7 +7,7 @@
 // IoT Manager https://play.google.com/store/apps/details?id=ru.esp8266.iotmanager
 //
 // version     : 1.0
-// IoT Manager : 1.5.0 and above
+// IoT Manager : 2.0 and above
 //
 ////////////////////////////////////////////////
 
@@ -480,10 +480,10 @@ function pubStatus() {
     Logger('publish outdoor:' + outdoor + ' indoor:' + indoor + ' hum:' + hum + ' and other data');
 
   var item = {};
-  item.status = Math.abs(Math.round(Math.random() * 30)); // , Math.abs(Math.round(Math.random() * 100))];
+  item.status = Math.abs(Math.round(Math.random() * 30));
   client.publish(prefix + "/" + deviceID + "/chart19/status", JSON.stringify(item),{ qos : 1 });
 
-  item.status = [[Math.abs(Math.round(Math.random() * 30))], [Math.abs(Math.round(Math.random() * 100))]];
+  item.status = { y1: Math.abs(Math.round(Math.random() * 30))], y2: Math.abs(Math.round(Math.random() * 100))};
   client.publish(prefix + "/" + deviceID + "/chart20/status", JSON.stringify(item),{ qos : 1 });
 
   item.status = Math.abs(Math.round(Math.random() * 30));
