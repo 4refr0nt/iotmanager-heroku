@@ -483,7 +483,7 @@ function pubStatus() {
   item.status = Math.abs(Math.round(Math.random() * 30));
   client.publish(prefix + "/" + deviceID + "/chart19/status", JSON.stringify(item),{ qos : 1 });
 
-  item.status = { y1: Math.abs(Math.round(Math.random() * 30))], y2: Math.abs(Math.round(Math.random() * 100))};
+  item.status = { y1: Math.abs(Math.round(Math.random() * 30))], y2: Math.abs(Math.round(Math.random() * 100)) };
   client.publish(prefix + "/" + deviceID + "/chart20/status", JSON.stringify(item),{ qos : 1 });
 
   item.status = Math.abs(Math.round(Math.random() * 30));
